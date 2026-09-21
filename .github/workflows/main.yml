@@ -40,6 +40,8 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install ./esptool
 
+          sudo chown -R $USER:$USER build
+
           python3 ./esptool/esptool.py \
             --chip esp32 \
             merge_bin \
