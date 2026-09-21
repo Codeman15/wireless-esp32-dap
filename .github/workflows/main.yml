@@ -19,16 +19,13 @@ jobs:
 
     steps:
 
-      # Checkout without the broken ESP8266 submodules
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ESP32 only needs this component
       - name: Get ESP32 OTA component
         run: |
           git submodule update --init components/corsacOTA
 
-      # Build the classic ESP32 firmware
       - name: Build for ESP32
         uses: espressif/esp-idf-ci-action@v1
         with:
@@ -36,13 +33,12 @@ jobs:
           target: esp32
           path: './'
 
-      # Merge the ESP32 firmware images
       - name: Merge bin files
         run: |
           git clone https://github.com/espressif/esptool.git
 
           python3 -m pip install --upgrade pip
-          python3 -m pip install -r ./esptool/requirements.txt
+          python3 -m pip install ./esptool
 
           python3 ./esptool/esptool.py \
             --chip esp32 \
@@ -56,7 +52,6 @@ jobs:
             build/wireless_esp_dap.bin \
             build/wireless_esp_dap_app.bin
 
-      # Upload the finished firmware
       - name: Upload firmware
         uses: actions/upload-artifact@v4
         with:
